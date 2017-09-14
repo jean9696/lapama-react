@@ -1,16 +1,19 @@
 import { combineReducers } from 'redux';
 import firebase, * as fromFirebase from 'firebase/firebase.red';
+import { routerReducer } from 'react-router-redux';
 
-const config = (state = {}, action) => {
+const browserHistory = (state = {}, action) => {
   switch (action.type) {
     default:
       return state;
   }
 };
+
 // todo: handle additional reducers in src
 const reducers = {
-  config,
+  browserHistory,
   firebase,
+  routing: routerReducer,
 };
 
 const rootReducer = combineReducers(reducers);
@@ -35,5 +38,6 @@ const selectInternal = {
 
 
 export const select = {
+  history: state => state.history,
   ...selectInternal,
 };

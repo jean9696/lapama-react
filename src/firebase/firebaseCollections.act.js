@@ -1,3 +1,4 @@
+import { select } from 'redux/reducers';
 import {
   firebaseCreateSuccess,
   firebaseError,
@@ -7,7 +8,6 @@ import {
   firebaseAddSubscription,
   firebaseRemoveSubscription,
 } from './firebase.act';
-import { select } from 'redux/reducers';
 import { insertFirebaseKeys } from './firebaseHelpers';
 
 export const firebaseCreate = (collectionRef, entity, callback) =>
@@ -15,24 +15,24 @@ export const firebaseCreate = (collectionRef, entity, callback) =>
     const state = getState();
     const firebaseData = select.firebaseData(state);
     firebaseData.ref(collectionRef(state)).push(entity)
-    .then(res => {
-      if (callback) callback(res);
-      dispatch(firebaseCreateSuccess({ id: res.key, ...entity }, collectionRef(state)));
-    })
-    .catch(err => dispatch(firebaseError(err)));
+      .then((res) => {
+        if (callback) callback(res);
+        dispatch(firebaseCreateSuccess({ id: res.key, ...entity }, collectionRef(state)));
+      })
+      .catch(err => dispatch(firebaseError(err)));
   };
 
-export const firebaseSubscribe = (collectionRef) =>
+export const firebaseSubscribe = collectionRef =>
   (dispatch, getState) => {
     const state = getState();
     const firebaseData = select.firebaseData(state);
     dispatch(firebaseAddSubscription(collectionRef(state)));
-    firebaseData.ref(collectionRef(state)).on('value', res => {
+    firebaseData.ref(collectionRef(state)).on('value', (res) => {
       dispatch(firebaseReadSuccess(collectionRef(state), insertFirebaseKeys(res.val())));
     });
   };
 
-export const firebaseUnsubscribe = (collectionRef) =>
+export const firebaseUnsubscribe = collectionRef =>
   (dispatch, getState) => {
     const state = getState();
     dispatch(firebaseRemoveSubscription(collectionRef(state)));
@@ -43,11 +43,11 @@ export const firebaseRead = (collectionRef, callback) =>
     const state = getState();
     const firebaseData = select.firebaseData(state);
     firebaseData.ref(collectionRef(state)).once('value')
-    .then(res => {
-      if (callback) callback(res);
-      dispatch(firebaseReadSuccess(collectionRef(state), insertFirebaseKeys(res.val())));
-    })
-    .catch(err => dispatch(firebaseError(err)));
+      .then((res) => {
+        if (callback) callback(res);
+        dispatch(firebaseReadSuccess(collectionRef(state), insertFirebaseKeys(res.val())));
+      })
+      .catch(err => dispatch(firebaseError(err)));
   };
 
 export const firebaseUpdate = (updates, callback) =>
@@ -59,7 +59,7 @@ export const firebaseUpdate = (updates, callback) =>
     }), {});
     const firebaseData = select.firebaseData(state);
     firebaseData.ref().update(updatesObject)
-      .then(res => {
+      .then((res) => {
         if (callback) callback(res);
         dispatch(firebaseUpdateSuccess(updatesObject));
       })
@@ -71,7 +71,7 @@ export const firebaseDelete = (collectionRef, callback) =>
     const state = getState();
     const firebaseData = select.firebaseData(state);
     firebaseData.ref(collectionRef(state)).remove()
-      .then(res => {
+      .then((res) => {
         // todo: test this
         if (callback) callback(res);
         dispatch(firebaseDeleteSuccess(collectionRef(state), insertFirebaseKeys(res.val())));

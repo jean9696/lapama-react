@@ -6,34 +6,54 @@ import TextField from 'material-ui/TextField';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styles from './login.scss';
-import { connectUser } from './login.act';
+import { createUserWithEmailAndPassword } from './login.act';
 
-class Login extends Component {
+class Register extends Component {
   static propTypes = {
-    connectUser: PropTypes.func.isRequired,
+    createUserWithEmailAndPassword: PropTypes.func.isRequired,
   }
 
   constructor(props, context) {
     super(props, context);
     this.state = {
       mail: '',
+      username: '',
       password: '',
+      confirmPassword: '',
     };
   }
 
   handleMailChange = (_, mail) => this.setState({ mail });
 
+  handleUsernameChange = (_, username) => this.setState({ username });
+
   handlePasswordChange = (_, password) => this.setState({ password });
 
-  login = () => this.props.connectUser(this.state.mail, this.state.password)
+  handleConfirmPasswordChange = (_, confirmPassword) => this.setState({ confirmPassword });
+
+
+  confirm = () => this.props.createUserWithEmailAndPassword(
+    this.state.mail,
+    this.state.password,
+    {
+      username: this.state.username,
+    },
+  );
 
   render() {
     return (
       <div className={styles.container}>
         <Paper className={styles.card}>
           <TextField hintText="Mail" value={this.state.mail} onChange={this.handleMailChange} />
+          <TextField hintText="Mail" value={this.state.username} onChange={this.handleUsernameChange} />
           <TextField type="password" hintText="Mot de passe" value={this.state.password} onChange={this.handlePasswordChange} />
-          <RaisedButton label="Se connecter" primary onClick={this.login} />
+          <TextField
+            type="password"
+            hintText="Confirmer mot de passe"
+            value={this.state.confirmPassword}
+            onChange={this.handleConfirmPasswordChange}
+          />
+          <RaisedButton label="Se connecter" primary onClick={this.confirm} />
         </Paper>
       </div>
     );
@@ -43,8 +63,8 @@ class Login extends Component {
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  connectUser,
+  createUserWithEmailAndPassword,
 }, dispatch);
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

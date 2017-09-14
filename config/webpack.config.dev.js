@@ -1,3 +1,4 @@
+/* eslint-disable */
 'use strict';
 
 const autoprefixer = require('autoprefixer');
@@ -26,6 +27,9 @@ const env = getClientEnvironment(publicUrl);
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
 module.exports = {
+  devServer: {
+    historyApiFallback: true
+  },
   // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
   // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
   devtool: 'cheap-module-source-map',
@@ -159,38 +163,27 @@ module.exports = {
           // In production, we use a plugin to extract that CSS to a file, but
           // in development "style" loader enables hot editing of CSS.
           {
-            test: /\.css$/,
+            test: /\.(css|scss)$/,
             use: [
-              require.resolve('style-loader'),
+              "style-loader",
               {
-                loader: require.resolve('css-loader'),
+                loader: "css-loader",
                 options: {
+                  modules: true, // default is false
+                  sourceMap: true,
                   importLoaders: 1,
-                  modules: true,
-                  localIdentName: '[name]__[local]___[hash:base64:5]',
-                },
+                  localIdentName: "[name]--[local]--[hash:base64:8]"
+                }
               },
               {
-                loader: require.resolve('postcss-loader'),
+                loader: 'postcss-loader',
                 options: {
-                  // Necessary for external CSS imports to work
-                  // https://github.com/facebookincubator/create-react-app/issues/2677
-                  ident: 'postcss',
-                  plugins: () => [
-                    require('postcss-flexbugs-fixes'),
-                    autoprefixer({
-                      browsers: [
-                        '>1%',
-                        'last 4 versions',
-                        'Firefox ESR',
-                        'not ie < 9', // React doesn't support IE8 anyway
-                      ],
-                      flexbox: 'no-2009',
-                    }),
-                  ],
-                },
+                  plugins: (loader) => [
+                    require('autoprefixer')({browsers: ['last 3 versions', 'iOS 9']}),
+                  ]
+                }
               },
-            ],
+            ]
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.

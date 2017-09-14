@@ -1,7 +1,8 @@
 .card {
-  width: 500px;
-  padding: 25px 10px;
-  background: white;
+  padding: 50px 60px;
+  background: white !important;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
