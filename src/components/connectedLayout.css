@@ -1,5 +1,6 @@
 .header {
   background-color: #03A9F4 !important;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px;
 }
 
 .headerTitleContainer {
@@ -14,4 +15,12 @@
 
 .iconButton {
   color: white;
+}
+
+.headerButton {
+  color: #fefefe !important;
+}
+
+.headerButton:hover {
+  color: #2196f3 !important;
 }

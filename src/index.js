@@ -8,7 +8,7 @@ import {
   Router,
   browserHistory,
   Route,
-  // IndexRoute,
+  IndexRoute,
 } from 'react-router';
 import * as firebaseApp from 'firebase';
 import { syncHistoryWithStore } from 'react-router-redux';
@@ -16,6 +16,8 @@ import Login from 'Login/Login';
 import App from 'App';
 import ConnectedLayout from 'components/ConnectedLayout';
 import Register from 'Login/Register';
+import Calendar from 'Calendar/Calendar';
+import ResetPassword from 'Login/ResetPassword';
 
 
 const firebase = {
@@ -42,10 +44,12 @@ ReactDOM.render(
       <Router history={history}>
         <Route component={App} >
           <Route path="/" component={ConnectedLayout}>
+            <IndexRoute component={Calendar} />
             <Route path="test" component={() => <div>register</div>} />
           </Route>
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
+          <Route path="/reset-password" component={ResetPassword} />
         </Route>
       </Router>
     </MuiThemeProvider>

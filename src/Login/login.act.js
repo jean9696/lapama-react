@@ -8,7 +8,7 @@ import { push } from 'react-router-redux';
 import { user as userRef } from 'collectionRefs';
 
 
-export function connectUser(email, password) {
+export function connectUser(email, password, errorCallback = () => {}) {
   return (dispatch, getState) => {
     const state = getState();
     const firebaseAuth = select.firebaseAuth(state);
@@ -21,6 +21,20 @@ export function connectUser(email, password) {
         });
     })
       .catch((err) => {
+        dispatch(firebaseError(err));
+        errorCallback();
+      });
+  };
+}
+
+export function connectUserByCookie(user) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const firebaseData = select.firebaseData(state);
+    return firebaseData.ref(`users/${user.uid}`).once('value')
+      .then((res) => {
+        dispatch(firebaseLoginSuccess(res.val()));
+      }).catch((err) => {
         dispatch(firebaseError(err));
       });
   };
@@ -40,7 +54,7 @@ export function createUserWithEmailAndPassword(email, password, user = {}) {
             },
           ],
         ));
-        dispatch(firebaseLoginSuccess());
+        dispatch(firebaseLoginSuccess(user));
         dispatch(push('/'));
       })
       .catch((err) => {

@@ -3,6 +3,12 @@
   background: white !important;
   display: flex;
   flex-direction: column;
+  min-width: 600px;
+  align-items: center;
+}
+
+.card > div {
+  margin: 10px auto;
 }
 
 .container {
@@ -12,4 +18,17 @@
   justify-content: center;
   height: 100vh;
   width: 100%;
+}
+
+.link {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.input {
+  width: 100% !important;
+}
+
+.error {
+  color: #de3226;
 }

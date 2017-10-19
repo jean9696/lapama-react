@@ -1,0 +1,45 @@
+.stepButtons {
+  display: flex;
+  margin-top: auto;
+  justify-content: flex-end;
+}
+
+.container {
+  min-height: 400px;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  margin: auto;
+}
+
+.dates, .people {
+  display: flex;
+}
+
+.people > div {
+  flex-grow: 1;
+  width: 100%;
+  text-align: center;
+  padding: 15px;
+}
+
+.dates div {
+  margin: auto 5px;
+}
+
+.warning {
+  color: #de3226;
+  margin-left: 20px;
+}
+
+.warningPlace {
+  color: #de3226;
+}
+
+.placeBlock {
+  display: flex;
+  align-items: center;
+}

@@ -26,6 +26,7 @@ export function firebaseLoginSuccess(userInfos) {
 }
 
 export function firebaseError(error) {
+  console.log(error)//eslint-disable-line
   return {
     type: FIREBASE_ERROR,
     error,

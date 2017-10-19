@@ -1,0 +1,33 @@
+.list {
+  overflow-y: auto;
+  width: 500px;
+  max-height: 30vh;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container > div {
+  margin: 20px;
+}
+
+.input {
+  width: 100% !important;
+}
+
+.dropzone {
+  padding: 10px;
+}
+
+.dropzoneActive {
+  border: dashed 3px greenyellow;
+  border-radius: 9px;
+  padding: 7px;
+}
+
+.contentText{
+  word-wrap: break-word;
+}

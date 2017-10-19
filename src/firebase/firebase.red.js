@@ -51,7 +51,7 @@ export default (state = {}, action) => {
         ...state,
         collections: {
           ...state.collections,
-          ...insertObjectInCollection(entityRef, state.collections, action.collection),
+          ...insertObjectInCollection(entityRef, state.collections, action.entity),
         },
       };
     }
@@ -121,7 +121,7 @@ const firebaseCollectionByRef = (state, ref) =>
 const firebaseCollectionByRefIsInitilized = (state, ref) =>
   fHas(`collections.${refAsObjectPath(ref)}`)(state);
 const firebaseFileByRef = (state, ref) => fGet(`files['${ref}']`)(state);
-const userInfos = state => state.userInfos;
+const userInfos = state => state.userInfos || {};
 
 
 export const selectors = {

@@ -10,6 +10,9 @@ import {
 } from './firebase.act';
 import { insertFirebaseKeys } from './firebaseHelpers';
 
+const addFilterFromQuery = (ref, query) =>
+  query.reduce((context, q) => context[q.function](...q.args), ref);
+
 export const firebaseCreate = (collectionRef, entity, callback) =>
   (dispatch, getState) => {
     const state = getState();
@@ -22,12 +25,12 @@ export const firebaseCreate = (collectionRef, entity, callback) =>
       .catch(err => dispatch(firebaseError(err)));
   };
 
-export const firebaseSubscribe = collectionRef =>
+export const firebaseSubscribe = (collectionRef, query = []) =>
   (dispatch, getState) => {
     const state = getState();
     const firebaseData = select.firebaseData(state);
     dispatch(firebaseAddSubscription(collectionRef(state)));
-    firebaseData.ref(collectionRef(state)).on('value', (res) => {
+    addFilterFromQuery(firebaseData.ref(collectionRef(state)), query).on('value', (res) => {
       dispatch(firebaseReadSuccess(collectionRef(state), insertFirebaseKeys(res.val())));
     });
   };
@@ -66,15 +69,15 @@ export const firebaseUpdate = (updates, callback) =>
       .catch(err => dispatch(firebaseError(err)));
   };
 
-export const firebaseDelete = (collectionRef, callback) =>
+export const firebaseDelete = (collectionRef, entityId, callback) =>
   (dispatch, getState) => {
     const state = getState();
     const firebaseData = select.firebaseData(state);
     firebaseData.ref(collectionRef(state)).remove()
-      .then((res) => {
+      .then(() => {
         // todo: test this
-        if (callback) callback(res);
-        dispatch(firebaseDeleteSuccess(collectionRef(state), insertFirebaseKeys(res.val())));
+        if (callback) callback(entityId);
+        dispatch(firebaseDeleteSuccess(entityId));
       })
       .catch(err => dispatch(firebaseError(err)));
   };

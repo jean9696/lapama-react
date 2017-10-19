@@ -1,7 +1,8 @@
 import React from 'react';
-import { ViewPropTypes, ActivityIndicator } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux';
 import { select } from 'redux/reducers';
+import LinearProgress from 'material-ui/LinearProgress';
 import { firebaseSubscribe, firebaseUnsubscribe } from './firebaseCollections.act';
 
 function mapStateToPropsWithRef(state, collectionRef) {
@@ -11,15 +12,15 @@ function mapStateToPropsWithRef(state, collectionRef) {
   };
 }
 
-export const connect = (...reduxArgs) => (collectionRef) =>
-  Component => {
+export const connect = (...reduxArgs) => (collectionRef, query) =>
+  (Component) => {
     const WiredComponent = reduxConnect(...reduxArgs)(Component);
     return reduxConnect(state => mapStateToPropsWithRef(state, collectionRef))(
       class FirebaseContainer extends React.Component {
-        static viewPropTypes = {
-          dispatch: ViewPropTypes.func,
-          isLoading: ViewPropTypes.bool,
-          collectionRef: ViewPropTypes.string,
+        static propTypes = {
+          dispatch: PropTypes.func.isRequired,
+          isLoading: PropTypes.bool.isRequired,
+          collectionRef: PropTypes.string.isRequired,
         };
 
         constructor(props, context) {
@@ -30,19 +31,19 @@ export const connect = (...reduxArgs) => (collectionRef) =>
         }
 
         componentDidMount = () => {
-          this.props.dispatch(firebaseSubscribe(this.state.collectionRef));
+          this.props.dispatch(firebaseSubscribe(this.state.collectionRef), query);
         };
 
         componentWillUnmount = () => {
-          this.props.dispatch(firebaseUnsubscribe(this.state.collectionRef));
+          this.props.dispatch(firebaseUnsubscribe(this.state.collectionRef), query);
         };
 
         render() {
           return this.props.isLoading ?
-            <ActivityIndicator style={{ marginTop: 20 }} />
+            <LinearProgress mode="indeterminate" />
             : <WiredComponent {...this.props} />;
         }
-      }
+      },
     );
   };
 
