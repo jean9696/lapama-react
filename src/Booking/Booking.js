@@ -232,8 +232,7 @@ class Booking extends Component { //eslint-disable-line
               const eventPeople = this.getTotalPeople(e.people) - 1;
               return (
                 <p key={e.id}>
-                  {e.username} sera également là {eventPeople > 0 && `avec ${eventPeople} personne(s) `} du {moment(e.start).format('DD/MM/YYYY')} au {moment(e.end).format('DD/MM/YYYY')},
-                  êtes vous sûr de pouvoir le supporter ?
+                  {e.username} sera également là {eventPeople > 0 && `avec ${eventPeople} personne(s) `} du {moment(e.start).format('DD/MM/YYYY')} au {moment(e.end).format('DD/MM/YYYY')}
                 </p>
               );
             })}

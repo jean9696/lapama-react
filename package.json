@@ -90,7 +90,7 @@
     ],
     "testMatch": [
       "<rootDir>/src/**/__tests__/**/*.js?(x)",
-      "<rootDir>/src/**/?(*.)(spec|test).js?(x)"z
+      "<rootDir>/src/**/?(*.)(spec|test).js?(x)"
     ],
     "testEnvironment": "node",
     "testURL": "http://localhost",

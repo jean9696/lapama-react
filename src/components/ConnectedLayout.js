@@ -75,11 +75,14 @@ class ConnectedLayout extends Component {
           </ToolbarGroup>
         </Toolbar>
         {this.props.children}
-        <Dialog open={this.state.openDialog} onRequestClose={this.handleCloseDialog}>
+        <Dialog
+          open={this.state.openDialog}
+          onRequestClose={this.handleCloseDialog} autoScrollBodyContent
+        >
           <Booking onClose={this.handleCloseDialog} />
         </Dialog>
         <Dialog
-          open={this.state.openAnnoucementDialog}
+          open={this.state.openAnnoucementDialog} autoScrollBodyContent
           onRequestClose={this.handleCloseAnnoncement}
         >
           <CreateAnnouncement onClose={this.handleCloseAnnoncement} />
