@@ -18,17 +18,10 @@ import ConnectedLayout from 'components/ConnectedLayout';
 import Register from 'Login/Register';
 import Calendar from 'Calendar/Calendar';
 import ResetPassword from 'Login/ResetPassword';
-
+import firebaseConfig from 'firebase/config';
 
 const firebase = {
-  app: firebaseApp.initializeApp({
-    apiKey: 'AIzaSyB1vnhNUMd71eejrSkLmg254rBwfCiTWTk',
-    authDomain: 'maximal-relic-150922.firebaseapp.com',
-    databaseURL: 'https://maximal-relic-150922.firebaseio.com',
-    projectId: 'maximal-relic-150922',
-    storageBucket: 'maximal-relic-150922.appspot.com',
-    messagingSenderId: '318528776798',
-  }),
+  app: firebaseApp.initializeApp(firebaseConfig),
   files: {},
   collections: {},
   subscriptions: {},
