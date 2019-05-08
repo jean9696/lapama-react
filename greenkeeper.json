@@ -1,0 +1,10 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "cloudFunctions/functions/package.json",
+        "package.json"
+      ]
+    }
+  }
+}
