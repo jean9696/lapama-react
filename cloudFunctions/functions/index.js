@@ -3,14 +3,37 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const moment = require('moment');
 const localization = require('moment/locale/fr');
-
+const google = require('googleapis').google;
 moment.updateLocale('fr', localization);
-// Configure the email transport using the default SMTP transport and a GMail account.
-// For other types of transports such as Sendgrid see https://nodemailer.com/transports/
-// TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
-const gmailEmail = encodeURIComponent(functions.config().gmail.email);
-const gmailPassword = encodeURIComponent(functions.config().gmail.password);
-const mailTransport = nodemailer.createTransport(`smtps://${gmailEmail}:${gmailPassword}@smtp.gmail.com`);
+
+const getTransport = async () => {
+  const OAuth2 = google.auth.OAuth2;
+
+  const oauth2Client = new OAuth2(
+    functions.config().gmail.id,
+    functions.config().gmail.secret,
+    "https://developers.google.com/oauthplayground" // Redirect URL
+  );
+  const refresh_token = '1//04MPqhYaoPTxgCgYIARAAGAQSNwF-L9IrxLElmvoPaoByWeemFxlhZlmqdAeUu6Za7_yYAAq5zIMIiRBx7lsXIfHbuRU60jhEBk4';
+  oauth2Client.setCredentials({
+    refresh_token,
+  });
+  const accessToken = await oauth2Client.getAccessToken();
+
+  return  nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      type: 'OAuth2',
+      user: functions.config().gmail.email,
+      clientId: functions.config().gmail.id,
+      clientSecret: functions.config().gmail.secret,
+      refreshToken: refresh_token,
+      accessToken,
+    }
+  });
+}
 
 admin.initializeApp();
 const dataBase = admin.database();
@@ -21,39 +44,39 @@ const sendMail = (username, mainText, secondaryText) => `<!DOCTYPE html PUBLIC "
 exports.sendEmailForReservation = functions.database.ref('/events/{eventId}')
   .onCreate((eventSnapshot) => {
     const event = eventSnapshot.val();
-    dataBase.ref('users').once('value')
+    return dataBase.ref('users').once('value')
       .then((usersSnapshot) => {
         const users = usersSnapshot.val();
-        Object.keys(users).map((i) => { //eslint-disable-line
+        return Promise.all(Object.keys(users).map((i) => { //eslint-disable-line
           const mailOptions = {
-            from: '"Lapam Corp." <lapama44500@gmail.com>',
+            from: '"Lapam Corp." <noreply.lapama@gmail.com>',
             to: users[i].mail,
             subject: `${event.username} a fait une réservation de Lapama`,
             html: sendMail(users[i].username, `${event.username} a fait une réservation de Lapama du ${moment(event.start).format('Do MMMM YYYY')} au ${moment(event.end).format('Do MMMM YYYY')}.`, users[event.userId] ? `Il devrait y avoir ${event.people.adults} adulte(s), ${event.people.children} enfants(s), ${event.people.babies} bébé(s) et ${event.people.guests} invités(s) <br /> Vous pouvez contacter ${event.username} sur <a href="emailto:${users[event.userId].mail}">${users[event.userId].mail}</a>` : 'Aucun moyen pour le contacter connu.'),
           };
-          mailTransport.sendMail(mailOptions).catch((error) => {
+          getTransport().then(t => t.sendMail(mailOptions).catch((error) => {
             console.error('There was an error while sending the email:', error);
-          });
-        });
+          }));
+        }));
       });
   });
 
 exports.sendEmailForDeleteReservation = functions.database.ref('/events/{eventId}')
   .onDelete((eventSnapshot) => {
     const event = eventSnapshot.val();
-    dataBase.ref('users').once('value')
+    return dataBase.ref('users').once('value')
       .then((usersSnapshot) => {
         const users = usersSnapshot.val();
-        Object.keys(users).map((i) => { //eslint-disable-line
+        return Promise.all(Object.keys(users).map((i) => { //eslint-disable-line
           const mailOptions = {
             from: '"Lapam Corp." <lapama44500@gmail.com>',
             to: users[i].mail,
             subject: `${event.username} a annulé une réservation de Lapama`,
             html: sendMail(users[i].username, `${event.username} a annulé sa réservation de Lapama du ${moment(event.start).format('Do MMMM YYYY')} au ${moment(event.end).format('Do MMMM YYYY')}.`, users[event.userId] ? `Vous pouvez le contacter sur <a href="emailto:${users[event.userId].mail}">${users[event.userId].mail}</a>` : 'Aucun moyen pour le contacter connu.'),
           };
-          mailTransport.sendMail(mailOptions).catch((error) => {
+          return getTransport().then(t => t.sendMail(mailOptions).catch((error) => {
             console.error('There was an error while sending the email:', error);
-          });
-        });
+          }));
+        }));
       });
   });
